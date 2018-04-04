@@ -12,6 +12,7 @@ function attachEvents() {
     console.log(authHeader);
 
     $('.load').click(loadAllCatches);
+    $('.add').click(createCatch);
     
 
     function request(method,endpoint,data) {
@@ -23,11 +24,22 @@ function attachEvents() {
         })
 
     }
-    
+
+
+    //ajax to loadAllCatches
     function loadAllCatches() {
         request('GET','/biggestCatches')
             .then(displayAllCatches)
             .catch(handleError)
+    }
+
+
+    //ajax to createCatch
+    function createCatch() {
+        let catchEl  = $('#addForm');
+        let dataObj = createDataJson(catchEl);
+        request('POST','/biggestCatches/',dataObj)
+            .then(loadAllCatches).catch(handleError)
     }
 
     function displayAllCatches(data) {
@@ -78,11 +90,11 @@ function attachEvents() {
     function createDataJson(catchEl) {
         return {
             angler: catchEl.find('.angler').val(),
-            weight:catchEl.find('.weight').val(),
+            weight:+catchEl.find('.weight').val(),
             species: catchEl.find('.species').val(),
             location: catchEl.find('.location').val(),
             bait:catchEl.find('.bait').val(),
-            captureTime:catchEl.find('.captureTime').val()
+            captureTime:+catchEl.find('.captureTime').val()
         }
     }
     
